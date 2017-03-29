@@ -20,7 +20,12 @@
 #include <msp430g2553.h>
 #include <stdint.h>
 
-// LCD DISPLAY:
+#define TIMER_A0_COUNT  65535;
+#define TIMER_ENABLE_COUNT 1000;
+#define ENC_CW  BIT3
+#define ENC_CCW BIT4
+#define ENC_PB  BIT5
+#define ENC_PINS P1IN |= (ENC_CW + ENC_CCW + ENC_PB);
 #define RS_DR P2OUT = P2OUT | BIT2 // define RS high
 #define RS_CWR P2OUT = P2OUT & (~BIT2) // define RS low
 #define RW_READ P2OUT = P2OUT | BIT1 // define Read signal R/W = 1 for reading
@@ -32,40 +37,21 @@
 void EnableNybble();
 void Delay_mS(int);
 void Delay_uS(int);
-
-
-
 void CheckBusy();
 void SendCommand(unsigned char);
 void SendData(unsigned char);
 void SendString(char*);
 void LCDInit();
-
-static const unsigned char FOUR_BITS_TWO_LINES = 0x28;
-static const unsigned char SET_CURSOR = 0x10;
-static const unsigned char SET_BLINKING_CURSOR = 0x0F;
-static const unsigned char SET_ENTRY_MODE = 0x06;
-
-
-//
-//*********************************************************************************************
-// QUADRATURE ENCODER SETUP
-//
-
-
-#define TIMER_A0_COUNT  65535;
-#define TIMER_ENABLE_COUNT 1000;
-#define ENC_CW  BIT3
-#define ENC_CCW BIT4
-#define ENC_PB  BIT5
-#define ENC_PINS P1IN |= (ENC_CW + ENC_CCW + ENC_PB);
-
 int  EncoderRead();
 void EncoderSetup();
 void UnusedPorts();
 void EncoderLoop();
 
 
+static const unsigned char FOUR_BITS_TWO_LINES = 0x28;
+static const unsigned char SET_CURSOR = 0x10;
+static const unsigned char SET_BLINKING_CURSOR = 0x0F;
+static const unsigned char SET_ENTRY_MODE = 0x06;
 static bool ENC_CW_FLAG;
 static bool ENC_CCW_FLAG;
 static bool ENC_PB_FLAG;
@@ -73,7 +59,6 @@ static int  COUNT_uS;
 static int  COUNT_mS;
 
 
-//*********************************************************************************************
 int main(void){
 
 //Calibrated Clock Setup
